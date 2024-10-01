@@ -84,10 +84,12 @@ def test_pages_availability_for_author(user, name, comment, status_code):
             ('news:edit', pytest.lazy_fixture('comment_object')),
     ),
 )
+@pytest.mark.usefixtures("news_object")
 @pytest.mark.django_db
 def test_redirects(client, name, comment):
     login_url = reverse('users:login')
     url = reverse(name, args=(comment.pk,))
     expected_url = f'{login_url}?next={url}'
     response = client.get(url)
-    assertRedirects(response, expected_url)
+    print(response)
+    assert response == expected_url

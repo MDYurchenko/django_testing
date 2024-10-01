@@ -1,6 +1,11 @@
+import time
+
 import pytest
 from django.test.client import Client
 from news.models import News, Comment
+from django.conf import settings
+from datetime import timedelta
+from django.utils import timezone
 
 
 @pytest.fixture
@@ -45,3 +50,32 @@ def comment_object(author, news_object):
         text='Текст комментария 1'
     )
     return comment_obj
+
+
+@pytest.fixture
+def news_list():
+    all_news = []
+    today = timezone.now()
+    for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1):
+        news = News(title=f'Новость {index}',
+                    text=f'Текст нововсти {index}',
+                    date=today - timedelta(days=index)
+                    )
+        all_news.append(news)
+    News.objects.bulk_create(all_news)
+
+
+@pytest.fixture
+@pytest.mark.usefixtures("author", "news_object")
+def comment_list(author, news_object):
+    all_comments = []
+    print(author)
+    for index in range(2):
+        news = Comment.objects.create(
+            news=news_object,
+            author=author,
+            text=f'Текст комментария {index}'
+        )
+        time.sleep(0.5)
+        all_comments.append(news)
+    Comment.objects.bulk_create(all_comments)
