@@ -36,7 +36,9 @@ def news_object():
     return news_object
 
 
-def comment(author):
+@pytest.mark.usefixtures("news_object")
+@pytest.fixture
+def comment_object(author, news_object):
     comment_obj = Comment.objects.create(
         news=news_object,
         author=author,

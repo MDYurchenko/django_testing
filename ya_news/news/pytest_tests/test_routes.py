@@ -1,15 +1,13 @@
-from pytest_django.asserts import assertRedirects
 from http import HTTPStatus
-from django.urls import reverse
+
 import pytest
-from django.test import TestCase
-from news.models import News
+from django.urls import reverse
 
 '''
 В файле test_routes.py:
 +Главная страница доступна анонимному пользователю.
 +Страница отдельной новости доступна анонимному пользователю.
-Страницы удаления и редактирования комментария доступны автору
++Страницы удаления и редактирования комментария доступны автору
  комментария.
 При попытке перейти на страницу редактирования или удаления комментария
  анонимный пользователь перенаправляется на страницу авторизации.
@@ -44,13 +42,15 @@ def test_news_page_for_anonymous_user(client, news_object):
 
 
 @pytest.mark.parametrize(
-    'name', 'comment',
+    'name, comment',
     (
-            ('news:edit', pytest.lazy_fixture('comment')),
-            ('news:delete', pytest.lazy_fixture('comment')),
+            ('news:edit', pytest.lazy_fixture('comment_object')),
+            ('news:delete', pytest.lazy_fixture('comment_object')),
     ),
 )
-def test_pages_availability_for_author(author_client, name, comment_object):
-    url = reverse(name, args=(comment_object.pk,))
+@pytest.mark.django_db
+def test_pages_availability_for_author(author_client, name, comment):
+    print(comment)
+    url = reverse(name, args=(comment.pk,))
     response = author_client.get(url)
     assert response.status_code == HTTPStatus.OK
