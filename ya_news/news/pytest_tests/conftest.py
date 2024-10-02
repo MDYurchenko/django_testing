@@ -68,14 +68,21 @@ def news_list():
 @pytest.fixture
 @pytest.mark.usefixtures("author", "news_object")
 def comment_list(author, news_object):
-    all_comments = []
-    print(author)
+    now = timezone.now()
     for index in range(2):
-        news = Comment.objects.create(
+        comment = Comment.objects.create(
             news=news_object,
             author=author,
             text=f'Текст комментария {index}'
         )
-        time.sleep(0.5)
-        all_comments.append(news)
-    Comment.objects.bulk_create(all_comments)
+        comment.created = now + timedelta(hours=index)
+        comment.save()
+
+
+@pytest.fixture
+def form_comment():
+    return {
+        'news': news_object,
+        'author': author,
+        'text': 'Текст комментария Х'
+    }
