@@ -60,7 +60,7 @@ def test_anonymous_client_has_no_form(client, news_object):
     assert 'form' not in response.context
 
 
-@pytest.mark.usefixtures("news_object", "author_client")
+@pytest.mark.usefixtures("author_client")
 @pytest.mark.django_db
 def test_authorized_client_has_form(author_client, news_object):
     # author.force_login(author)
