@@ -80,7 +80,7 @@ def test_pages_availability_for_author(user, name, comment, status_code):
 @pytest.mark.parametrize(
     'name, comment',
     (
-            ('news:detail', pytest.lazy_fixture('comment_object')),
+            ('news:delete', pytest.lazy_fixture('comment_object')),
             ('news:edit', pytest.lazy_fixture('comment_object')),
     ),
 )
@@ -91,5 +91,5 @@ def test_redirects(client, name, comment):
     url = reverse(name, args=(comment.pk,))
     expected_url = f'{login_url}?next={url}'
     response = client.get(url)
-    print(response)
-    assert response == expected_url
+
+    assertRedirects(response, expected_url)
