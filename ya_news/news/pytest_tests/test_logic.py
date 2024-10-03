@@ -16,10 +16,10 @@ from ..forms import BAD_WORDS, WARNING
     )
 )
 def test_user_create_comment(user, expected_result, form_comment, news_object):
-    '''
+    """
     Анонимный пользователь не может отправить комментарий.
     Авторизованный пользователь может отправить комментарий.
-    '''
+    """
     url = reverse('news:detail', args=(news_object.id,))
     user.post(url, data=form_comment)
 
@@ -30,9 +30,7 @@ def test_user_create_comment(user, expected_result, form_comment, news_object):
 @pytest.mark.usefixtures('form_comment', 'news_object')
 def test_author_can_edit_comment(author_client, form_comment,
                                  comment_object, news_object):
-    '''
-    Авторизованный пользователь может редактировать свои комментарии.
-    '''
+    """Авторизованный пользователь может редактировать свои комментарии."""
     url = reverse('news:edit', args=(comment_object.id,))
     response = author_client.post(url, data=form_comment)
 
@@ -48,9 +46,7 @@ def test_author_can_edit_comment(author_client, form_comment,
 @pytest.mark.usefixtures('form_comment', 'news_object')
 def test_not_author_can_edit_comment(not_author_client, form_comment,
                                      comment_object, news_object):
-    '''
-    Авторизованный пользователь не может редактировать чужие комментарии.
-    '''
+    """Авторизованный пользователь не может редактировать чужие комментарии."""
     url = reverse('news:edit', args=(comment_object.id,))
     response = not_author_client.post(url, data=form_comment)
 
@@ -65,9 +61,7 @@ def test_not_author_can_edit_comment(not_author_client, form_comment,
 @pytest.mark.usefixtures('form_comment', 'news_object')
 def test_author_can_delete_comment(author_client, form_comment,
                                    comment_object, news_object):
-    '''
-    Авторизованный пользователь может удалять свои комментарии.
-    '''
+    """Авторизованный пользователь может удалять свои комментарии."""
     url = reverse('news:delete', args=(comment_object.id,))
     response = author_client.post(url, data=form_comment)
 
@@ -83,9 +77,7 @@ def test_author_can_delete_comment(author_client, form_comment,
 @pytest.mark.usefixtures('form_comment', 'news_object')
 def test_not_author_can_delete_comment(not_author_client, form_comment,
                                        comment_object, news_object):
-    '''
-    Авторизованный пользователь не может удалять чужие комментарии.
-    '''
+    """Авторизованный пользователь не может удалять чужие комментарии."""
     url = reverse('news:delete', args=(comment_object.id,))
     response = not_author_client.post(url, data=form_comment)
 
@@ -99,9 +91,10 @@ def test_not_author_can_delete_comment(not_author_client, form_comment,
 @pytest.mark.django_db
 @pytest.mark.usefixtures('form_comment', 'news_object')
 def test_comment_wrong_words(not_author_client, form_comment, news_object):
-    '''
-    Если комментарий содержит запрещённые слова, он не будет опубликован, а форма вернёт ошибку.
-    '''
+    """
+    Если комментарий содержит запрещённые слова,
+    он не будет опубликован, а форма вернёт ошибку.
+    """
     url = reverse('news:detail', args=(news_object.id,))
 
     form_comment.pop('text')

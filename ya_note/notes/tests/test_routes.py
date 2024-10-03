@@ -22,7 +22,7 @@ class TestRoutes(TestCase):
         )
 
     def test_pages_availability(self):
-        '''
+        """
         Тест проверяет, что
         Главная страница доступна анонимному пользователю;
         страницы:
@@ -30,7 +30,7 @@ class TestRoutes(TestCase):
         входа в учётную запись
         и выхода из неё
         доступны всем пользователям.
-        '''
+        """
         urls = (
             ('notes:home', None),
             ('users:login', None),
@@ -44,14 +44,14 @@ class TestRoutes(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_authentificated_user_pages_availability(self):
-        '''
+        """
         Тест проверяет, что
         Аутентифицированному пользователю-автору доступна
         страница со списком заметок notes/,
         страница успешного добавления заметки done/,
         страница добавления новой заметки add/.
         Другой пользователь получит 404 ошибку.
-        '''
+        """
         urls = (
             ('notes:edit', (self.note.slug,)),
             ('notes:detail', (self.note.slug,)),
@@ -71,14 +71,14 @@ class TestRoutes(TestCase):
                     self.assertEqual(response.status_code, status)
 
     def test_auth_user_pages(self):
-        '''
+        """
         Тест проверяет, что
         Страницы
         отдельной заметки,
         удаления и
         редактирования заметки доступны
         только автору заметки.
-        '''
+        """
         urls = (
             'notes:list',
             'notes:success',
@@ -92,7 +92,7 @@ class TestRoutes(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_anon_user_pages(self):
-        '''
+        """
         Тест проверяет, что
         Если на эти страницы
         отдельной заметки,
@@ -100,7 +100,7 @@ class TestRoutes(TestCase):
         редактирования заметки
         попытается зайти не автор
          — вернётся ошибка 404.
-        '''
+        """
         urls = (
             ('notes:list', None),
             ('notes:success', None),

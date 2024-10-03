@@ -36,10 +36,10 @@ class TestLogic(TestCase):
         }
 
     def test_the_same_note(self):
-        '''
+        """
         Тест проверяет, что
         невозможно создать две заметки с одинаковым slug.
-        '''
+        """
         url = reverse('notes:add')
         self.form_note_data['slug'] = self.note1.slug
         self.client.force_login(self.author1)
@@ -50,10 +50,10 @@ class TestLogic(TestCase):
         self.assertEqual(Note.objects.count(), 2)
 
     def test_edit_foreign_note(self):
-        '''
+        """
         Тест проверяет, что
         пользователь не может редактировать чужие заметки
-        '''
+        """
         self.client.force_login(self.author1)
         response = self.client.post(reverse('notes:edit',
                                             args=(self.note2.slug,)))
@@ -66,10 +66,10 @@ class TestLogic(TestCase):
         self.assertEqual(self.note2.slug, note_from_db.slug)
 
     def test_delete_foreign_note(self):
-        '''
+        """
         Тест проверяет, что
         пользователь не может удалять чужие заметки
-        '''
+        """
         self.client.force_login(self.author1)
         response = self.client.post(reverse('notes:delete',
                                             args=(self.note2.slug,)))
@@ -77,10 +77,10 @@ class TestLogic(TestCase):
         self.assertEqual(Note.objects.count(), 2)
 
     def test_edit_your_note(self):
-        '''
+        """
         Тест проверяет, что
         пользователь может редактировать свои заметки
-        '''
+        """
         self.client.force_login(self.author1)
         response = self.client.post(reverse('notes:edit',
                                             args=(self.note1.slug,)
@@ -95,10 +95,10 @@ class TestLogic(TestCase):
         self.assertEqual(self.note1.slug, self.form_note_data['slug'])
 
     def test_delete_your_note(self):
-        '''
+        """
         Тест проверяет, что
         пользователь может удалять свои заметки
-        '''
+        """
         self.client.force_login(self.author1)
         response = self.client.post(reverse('notes:delete',
                                             args=(self.note1.slug,)))
@@ -118,10 +118,10 @@ class TestLogicFrom(TestCase):
         }
 
     def test_add_notes(self):
-        '''
+        """
         Тест проверяет, что
         залогиненный пользователь может создать заметку, а анонимный — не может.
-        '''
+        """
         target_url = reverse('notes:add')
         login_url = reverse('users:login')
         unauthorized_user_redirect_url = f'{login_url}?next={target_url}'
@@ -142,11 +142,11 @@ class TestLogicFrom(TestCase):
         self.assertEqual(note.slug, self.form_note_data['slug'])
 
     def test_empty_slug(self):
-        '''
+        """
         Тест проверяет, что
         если при создании заметки не заполнен slug,
         то он формируется автоматически, с помощью функции pytils.translit.slugify.
-        '''
+        """
         url = reverse('notes:add')
         self.form_note_data.pop('slug')
         self.client.force_login(self.author1)

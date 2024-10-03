@@ -28,11 +28,11 @@ class TestContent(TestCase):
         )
 
     def test_note_in_object_list(self):
-        '''
+        """
         Тест проверяет, что
         отдельная заметка передаётся на страницу со списком заметок в
         списке object_list в словаре context
-        '''
+        """
         self.client.force_login(self.author1)
         url = reverse('notes:list')
         response = self.client.get(url)
@@ -40,11 +40,11 @@ class TestContent(TestCase):
         self.assertIn(self.note1, object_list)
 
     def test_note_not_in_object_list(self):
-        '''
+        """
         Тест проверяет, что
         в список заметок одного пользователя не попадают заметки
         другого пользователя;
-        '''
+        """
         self.client.force_login(self.author1)
         url = reverse('notes:list')
         response = self.client.get(url)
@@ -52,10 +52,10 @@ class TestContent(TestCase):
         self.assertNotIn(self.note2, object_list)
 
     def test_form_at_pages(self):
-        '''
+        """
         Тест проверяет, что
         на страницы создания и редактирования заметки передаются формы.
-        '''
+        """
         urls = (
             ('notes:add', None),
             ('notes:edit', (self.note1.slug,))
