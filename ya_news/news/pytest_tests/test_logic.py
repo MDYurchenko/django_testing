@@ -10,10 +10,9 @@ from ..forms import BAD_WORDS, WARNING
 @pytest.mark.usefixtures('form_comment', 'news_object')
 @pytest.mark.parametrize(
     'user, expected_result',
-    (
-            (pytest.lazy_fixture('client'), 0),
-            (pytest.lazy_fixture('not_author_client'), 1),
-    )
+    ((pytest.lazy_fixture('client'), 0),
+     (pytest.lazy_fixture('not_author_client'), 1),
+     )
 )
 def test_user_create_comment(user, expected_result, form_comment, news_object):
     """

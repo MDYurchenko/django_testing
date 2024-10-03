@@ -1,5 +1,3 @@
-import time
-
 import pytest
 from django.test.client import Client
 from news.models import News, Comment

@@ -33,7 +33,10 @@ def test_home_availability_for_anonymous_user(client, url_name):
 
 @pytest.mark.django_db
 def test_news_page_for_anonymous_user(client, news_object):
-    """Тестируует, что страница отдельной новости доступна анонимному пользователю."""
+    """
+    Тестируует, что страница отдельной новости доступна
+    анонимному пользователю.
+    """
     url = reverse('news:detail', kwargs={'pk': news_object.id})
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
@@ -41,31 +44,30 @@ def test_news_page_for_anonymous_user(client, news_object):
 
 @pytest.mark.parametrize(
     'user, name, comment, status_code',
-    (
-            (pytest.lazy_fixture('author_client'),
-             'news:edit',
-             pytest.lazy_fixture('comment_object'),
-             HTTPStatus.OK,
-             ),
+    ((pytest.lazy_fixture('author_client'),
+      'news:edit',
+      pytest.lazy_fixture('comment_object'),
+      HTTPStatus.OK,
+      ),
 
-            (pytest.lazy_fixture('author_client'),
-             'news:delete',
-             pytest.lazy_fixture('comment_object'),
-             HTTPStatus.OK,
-             ),
+     (pytest.lazy_fixture('author_client'),
+      'news:delete',
+      pytest.lazy_fixture('comment_object'),
+      HTTPStatus.OK,
+      ),
 
-            (pytest.lazy_fixture('not_author_client'),
-             'news:edit',
-             pytest.lazy_fixture('comment_object'),
-             HTTPStatus.NOT_FOUND,
-             ),
+     (pytest.lazy_fixture('not_author_client'),
+      'news:edit',
+      pytest.lazy_fixture('comment_object'),
+      HTTPStatus.NOT_FOUND,
+      ),
 
-            (pytest.lazy_fixture('not_author_client'),
-             'news:edit',
-             pytest.lazy_fixture('comment_object'),
-             HTTPStatus.NOT_FOUND,
-             ),
-    ),
+     (pytest.lazy_fixture('not_author_client'),
+      'news:edit',
+      pytest.lazy_fixture('comment_object'),
+      HTTPStatus.NOT_FOUND,
+      ),
+     ),
 )
 @pytest.mark.django_db
 def test_pages_availability_for_author(user, name, comment, status_code):
@@ -83,10 +85,9 @@ def test_pages_availability_for_author(user, name, comment, status_code):
 
 @pytest.mark.parametrize(
     'name, comment',
-    (
-            ('news:delete', pytest.lazy_fixture('comment_object')),
-            ('news:edit', pytest.lazy_fixture('comment_object')),
-    ),
+    (('news:delete', pytest.lazy_fixture('comment_object')),
+     ('news:edit', pytest.lazy_fixture('comment_object')),
+     ),
 )
 @pytest.mark.usefixtures("news_object")
 @pytest.mark.django_db

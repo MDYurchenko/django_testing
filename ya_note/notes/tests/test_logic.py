@@ -120,7 +120,8 @@ class TestLogicFrom(TestCase):
     def test_add_notes(self):
         """
         Тест проверяет, что
-        залогиненный пользователь может создать заметку, а анонимный — не может.
+        залогиненный пользователь может создать заметку, а анонимный
+        — не может.
         """
         target_url = reverse('notes:add')
         login_url = reverse('users:login')
@@ -145,7 +146,8 @@ class TestLogicFrom(TestCase):
         """
         Тест проверяет, что
         если при создании заметки не заполнен slug,
-        то он формируется автоматически, с помощью функции pytils.translit.slugify.
+        то он формируется автоматически, с помощью функции
+        pytils.translit.slugify.
         """
         url = reverse('notes:add')
         self.form_note_data.pop('slug')
