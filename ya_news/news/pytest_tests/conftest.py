@@ -39,7 +39,6 @@ def news_object():
     return news_object
 
 
-@pytest.mark.usefixtures("news_object")
 @pytest.fixture
 def comment_object(author, news_object):
     comment_obj = Comment.objects.create(
@@ -64,10 +63,9 @@ def news_list():
 
 
 @pytest.fixture
-@pytest.mark.usefixtures("author", "news_object")
 def comment_list(author, news_object):
     now = timezone.now()
-    for index in range(2):
+    for index in range(10):
         comment = Comment.objects.create(
             news=news_object,
             author=author,
@@ -77,8 +75,16 @@ def comment_list(author, news_object):
         comment.save()
 
 
+# Не понял, как её задать статикой, ведь мы используем две
+# фикстуры, чтобы создать заполненную форму комментария
+# я попробовал задать здесь переменную, её тогда нужно
+# в тесты, но тогда news_object воспринимается, как
+# функция и не сабскриптабл
+# попробовал задать в файле с тестами, но тогда
+# как в неё прокинуть фикстуры?
+
 @pytest.fixture
-def form_comment():
+def form_comment(author, news_object):
     return {
         'news': news_object,
         'author': author,

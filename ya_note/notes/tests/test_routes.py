@@ -1,7 +1,5 @@
-from django.test import TestCase
 from django.urls import reverse
 from http import HTTPStatus
-from ..models import Note
 from django.contrib.auth import get_user_model
 from .base import TestBase
 
@@ -29,7 +27,7 @@ class TestRoutes(TestBase):
         for name, args in urls:
             with self.subTest(name=name):
                 url = reverse(name, args=args)
-                response = self.client.get(url)
+                response = self.anonymous.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_authentificated_user_pages_availability(self):
@@ -47,16 +45,15 @@ class TestRoutes(TestBase):
             ('notes:delete', (self.note1.slug,)),
         )
         users = (
-            (self.author, HTTPStatus.OK),
-            (self.reader, HTTPStatus.NOT_FOUND)
+            (self.author_logged, HTTPStatus.OK),
+            (self.reader_logged, HTTPStatus.NOT_FOUND)
 
         )
         for user, status in users:
-            self.client.force_login(user)
             for name, args in urls:
                 with self.subTest(name=name):
                     url = reverse(name, args=args)
-                    response = self.client.get(url)
+                    response = user.get(url)
                     self.assertEqual(response.status_code, status)
 
     def test_auth_user_pages(self):
@@ -73,11 +70,10 @@ class TestRoutes(TestBase):
             'notes:success',
             'notes:add'
         )
-        self.client.force_login(self.reader)
         for name in urls:
             with self.subTest(name=name):
                 url = reverse(name)
-                response = self.client.get(url)
+                response = self.reader_logged.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_anon_user_pages(self):
@@ -103,5 +99,5 @@ class TestRoutes(TestBase):
             with self.subTest(name=name):
                 url = reverse(name, args=args)
                 redirect_url = f'{login_url}?next={url}'
-                response = self.client.get(url)
+                response = self.anonymous.get(url)
                 self.assertRedirects(response, redirect_url)

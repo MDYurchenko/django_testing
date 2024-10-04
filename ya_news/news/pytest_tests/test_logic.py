@@ -1,13 +1,12 @@
 import pytest
 from django.shortcuts import reverse
-from ..models import Comment
+from ..models import Comment, News
 from pytest_django.asserts import assertRedirects, assertFormError
 from http import HTTPStatus
 from ..forms import BAD_WORDS, WARNING
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 @pytest.mark.parametrize(
     'user, expected_result',
     ((pytest.lazy_fixture('client'), 0),
@@ -26,7 +25,6 @@ def test_user_create_comment(user, expected_result, form_comment, news_object):
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 def test_author_can_edit_comment(author_client, form_comment,
                                  comment_object, news_object):
     """Авторизованный пользователь может редактировать свои комментарии."""
@@ -44,7 +42,6 @@ def test_author_can_edit_comment(author_client, form_comment,
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 def test_not_author_can_edit_comment(not_author_client, form_comment,
                                      comment_object, news_object):
     """Авторизованный пользователь не может редактировать чужие комментарии."""
@@ -59,7 +56,6 @@ def test_not_author_can_edit_comment(not_author_client, form_comment,
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 def test_author_can_delete_comment(author_client, form_comment,
                                    comment_object, news_object):
     """Авторизованный пользователь может удалять свои комментарии."""
@@ -76,7 +72,6 @@ def test_author_can_delete_comment(author_client, form_comment,
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 def test_not_author_can_delete_comment(not_author_client, form_comment,
                                        comment_object, news_object):
     """Авторизованный пользователь не может удалять чужие комментарии."""
@@ -93,7 +88,6 @@ def test_not_author_can_delete_comment(not_author_client, form_comment,
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('form_comment', 'news_object')
 def test_comment_wrong_words(not_author_client, form_comment, news_object):
     """
     Если комментарий содержит запрещённые слова,

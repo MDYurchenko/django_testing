@@ -1,4 +1,3 @@
-from django.test import TestCase
 from django.urls import reverse
 from ..models import Note
 from django.contrib.auth import get_user_model
@@ -26,9 +25,9 @@ class TestContent(TestBase):
         отдельная заметка передаётся на страницу со списком заметок в
         списке object_list в словаре context
         """
-        self.client.force_login(self.author)
+
         url = reverse('notes:list')
-        response = self.client.get(url)
+        response = self.author_logged.get(url)
         object_list = response.context['object_list']
         self.assertIn(self.note1, object_list)
 
@@ -38,9 +37,11 @@ class TestContent(TestBase):
         в список заметок одного пользователя не попадают заметки
         другого пользователя;
         """
-        self.client.force_login(self.author)
+        # Не понял, как вынести пути в setupdata:
+        # у меня же каждый раз разные пути, например,
+        # в следующей функции test_form_at_pages уже другой набор
         url = reverse('notes:list')
-        response = self.client.get(url)
+        response = self.author_logged.get(url)
         object_list = response.context['object_list']
         self.assertNotIn(self.note2, object_list)
 
@@ -53,10 +54,8 @@ class TestContent(TestBase):
             ('notes:add', None),
             ('notes:edit', (self.note1.slug,))
         )
-        self.client.force_login(self.author)
-
         for url, args in urls:
             with self.subTest(name=url):
-                response = self.client.get(reverse(url, args=args))
+                response = self.author_logged.get(reverse(url, args=args))
                 self.assertIn('form', response.context)
                 self.assertIsInstance(response.context['form'], NoteForm)

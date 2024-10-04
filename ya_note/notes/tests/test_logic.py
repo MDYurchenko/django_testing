@@ -35,8 +35,7 @@ class TestLogic(TestBase):
         """
         url = reverse('notes:add')
         self.form_note_data['slug'] = self.note1.slug
-        self.client.force_login(self.author)
-        response = self.client.post(url, data=self.form_note_data)
+        response = self.author_logged.post(url, data=self.form_note_data)
         assertFormError(response, 'form',
                         'slug',
                         errors=(self.note1.slug + WARNING))
@@ -47,9 +46,8 @@ class TestLogic(TestBase):
         Тест проверяет, что
         пользователь не может редактировать чужие заметки
         """
-        self.client.force_login(self.author)
-        response = self.client.post(reverse('notes:edit',
-                                            args=(self.note2.slug,)))
+        response = self.author_logged.post(reverse('notes:edit',
+                                                   args=(self.note2.slug,)))
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
         note_from_db = Note.objects.get(id=self.note2.id)
@@ -63,9 +61,8 @@ class TestLogic(TestBase):
         Тест проверяет, что
         пользователь не может удалять чужие заметки
         """
-        self.client.force_login(self.author)
-        response = self.client.post(reverse('notes:delete',
-                                            args=(self.note2.slug,)))
+        response = self.author_logged.post(reverse('notes:delete',
+                                                   args=(self.note2.slug,)))
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(Note.objects.count(), 2)
 
@@ -74,11 +71,10 @@ class TestLogic(TestBase):
         Тест проверяет, что
         пользователь может редактировать свои заметки
         """
-        self.client.force_login(self.author)
-        response = self.client.post(reverse('notes:edit',
-                                            args=(self.note1.slug,)
-                                            ),
-                                    self.form_note_data)
+        response = self.author_logged.post(reverse('notes:edit',
+                                                   args=(self.note1.slug,)
+                                                   ),
+                                           self.form_note_data)
         self.assertRedirects(response, reverse('notes:success'))
 
         self.note1.refresh_from_db()
@@ -92,9 +88,8 @@ class TestLogic(TestBase):
         Тест проверяет, что
         пользователь может удалять свои заметки
         """
-        self.client.force_login(self.author)
-        response = self.client.post(reverse('notes:delete',
-                                            args=(self.note1.slug,)))
+        response = self.author_logged.post(reverse('notes:delete',
+                                                   args=(self.note1.slug,)))
         self.assertRedirects(response, reverse('notes:success'))
         self.assertEqual(Note.objects.count(), 1)
 

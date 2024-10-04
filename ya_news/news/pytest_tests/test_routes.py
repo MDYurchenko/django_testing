@@ -79,7 +79,6 @@ def test_pages_availability_for_author(user, name, comment, status_code):
      ('news:edit', pytest.lazy_fixture('comment_object')),
      ),
 )
-@pytest.mark.usefixtures("news_object")
 @pytest.mark.django_db
 def test_redirects(client, name, comment):
     """

@@ -20,7 +20,6 @@ def test_news_list(client):
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-@pytest.mark.usefixtures("news_list")
 @pytest.mark.django_db
 def test_news_order(client):
     """
@@ -38,7 +37,6 @@ def test_news_order(client):
     assert sorted_dates == all_dates
 
 
-@pytest.mark.usefixtures("news_object", "comment_list")
 @pytest.mark.django_db
 def test_comment_order(client, news_object, comment_list):
     """
@@ -58,7 +56,6 @@ def test_comment_order(client, news_object, comment_list):
     assert sorted_timestamps == all_timestamps
 
 
-@pytest.mark.usefixtures("news_object")
 @pytest.mark.django_db
 def test_anonymous_client_has_no_form(client, news_object):
     """
@@ -71,7 +68,6 @@ def test_anonymous_client_has_no_form(client, news_object):
     assert 'form' not in response.context
 
 
-@pytest.mark.usefixtures("author_client")
 @pytest.mark.django_db
 def test_authorized_client_has_form(author_client, news_object):
     """
