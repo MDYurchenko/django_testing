@@ -1,4 +1,3 @@
-from django.forms import ClearableFileInput
 from django.test import TestCase
 from ..models import Note
 from django.contrib.auth import get_user_model
