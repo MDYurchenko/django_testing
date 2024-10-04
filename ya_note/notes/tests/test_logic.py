@@ -6,28 +6,21 @@ from ..models import Note
 from django.contrib.auth import get_user_model
 from ..forms import WARNING
 from pytils.translit import slugify
+from .base import TestBase
 
 User = get_user_model()
 
 
-class TestLogic(TestCase):
+class TestLogic(TestBase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.author1 = User.objects.create(username='Author1')
-        cls.author2 = User.objects.create(username='Author2')
-
-        cls.note1 = Note.objects.create(
-            title='head1',
-            text='Текст1',
-            slug='someslug1',
-            author=cls.author1,
-        )
+        super().setUpTestData()
         cls.note2 = Note.objects.create(
             title='Заголовок2',
             text='Текст2',
             slug='someslug2',
-            author=cls.author2,
+            author=cls.reader,
         )
         cls.form_note_data = {
             'title': 'Заголовок3',
@@ -42,7 +35,7 @@ class TestLogic(TestCase):
         """
         url = reverse('notes:add')
         self.form_note_data['slug'] = self.note1.slug
-        self.client.force_login(self.author1)
+        self.client.force_login(self.author)
         response = self.client.post(url, data=self.form_note_data)
         assertFormError(response, 'form',
                         'slug',
@@ -54,7 +47,7 @@ class TestLogic(TestCase):
         Тест проверяет, что
         пользователь не может редактировать чужие заметки
         """
-        self.client.force_login(self.author1)
+        self.client.force_login(self.author)
         response = self.client.post(reverse('notes:edit',
                                             args=(self.note2.slug,)))
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
@@ -70,7 +63,7 @@ class TestLogic(TestCase):
         Тест проверяет, что
         пользователь не может удалять чужие заметки
         """
-        self.client.force_login(self.author1)
+        self.client.force_login(self.author)
         response = self.client.post(reverse('notes:delete',
                                             args=(self.note2.slug,)))
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
@@ -81,7 +74,7 @@ class TestLogic(TestCase):
         Тест проверяет, что
         пользователь может редактировать свои заметки
         """
-        self.client.force_login(self.author1)
+        self.client.force_login(self.author)
         response = self.client.post(reverse('notes:edit',
                                             args=(self.note1.slug,)
                                             ),
@@ -99,7 +92,7 @@ class TestLogic(TestCase):
         Тест проверяет, что
         пользователь может удалять свои заметки
         """
-        self.client.force_login(self.author1)
+        self.client.force_login(self.author)
         response = self.client.post(reverse('notes:delete',
                                             args=(self.note1.slug,)))
         self.assertRedirects(response, reverse('notes:success'))

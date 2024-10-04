@@ -39,6 +39,8 @@ def test_author_can_edit_comment(author_client, form_comment,
     comment_object.refresh_from_db()
 
     assert comment_object.text == form_comment['text']
+    assert comment_object.news == form_comment['news']
+    assert comment_object.author == form_comment['author']
 
 
 @pytest.mark.django_db
@@ -61,15 +63,16 @@ def test_not_author_can_edit_comment(not_author_client, form_comment,
 def test_author_can_delete_comment(author_client, form_comment,
                                    comment_object, news_object):
     """Авторизованный пользователь может удалять свои комментарии."""
+    comment_count_before = Comment.objects.count()
     url = reverse('news:delete', args=(comment_object.id,))
     response = author_client.post(url, data=form_comment)
 
     assertRedirects(response, reverse('news:detail',
                                       args=(news_object.id,)) + '#comments')
 
-    comment_number = Comment.objects.count()
+    comment_number_after = Comment.objects.count()
 
-    assert comment_number == 0
+    assert comment_count_before - comment_number_after == 1
 
 
 @pytest.mark.django_db
@@ -77,14 +80,16 @@ def test_author_can_delete_comment(author_client, form_comment,
 def test_not_author_can_delete_comment(not_author_client, form_comment,
                                        comment_object, news_object):
     """Авторизованный пользователь не может удалять чужие комментарии."""
+    comment_count_before = Comment.objects.count()
+
     url = reverse('news:delete', args=(comment_object.id,))
     response = not_author_client.post(url, data=form_comment)
 
     assert response.status_code == HTTPStatus.NOT_FOUND
 
-    comment_number = Comment.objects.count()
+    comment_number_after = Comment.objects.count()
 
-    assert comment_number == 1
+    assert comment_count_before - comment_number_after == 0
 
 
 @pytest.mark.django_db

@@ -4,16 +4,6 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertRedirects
 
-"""
-В файле test_routes.py:
-
-
-+
-
-+
-
-"""
-
 
 @pytest.mark.parametrize(
     'url_name',

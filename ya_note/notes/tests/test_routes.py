@@ -3,23 +3,12 @@ from django.urls import reverse
 from http import HTTPStatus
 from ..models import Note
 from django.contrib.auth import get_user_model
+from .base import TestBase
 
 User = get_user_model()
 
 
-class TestRoutes(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.author = User.objects.create(username='Author')
-        cls.reader = User.objects.create(username='Reader')
-
-        cls.note = Note.objects.create(
-            title='Заголовок',
-            text='Текст',
-            slug='someslug',
-            author=cls.author,
-        )
+class TestRoutes(TestBase):
 
     def test_pages_availability(self):
         """
@@ -53,9 +42,9 @@ class TestRoutes(TestCase):
         Другой пользователь получит 404 ошибку.
         """
         urls = (
-            ('notes:edit', (self.note.slug,)),
-            ('notes:detail', (self.note.slug,)),
-            ('notes:delete', (self.note.slug,)),
+            ('notes:edit', (self.note1.slug,)),
+            ('notes:detail', (self.note1.slug,)),
+            ('notes:delete', (self.note1.slug,)),
         )
         users = (
             (self.author, HTTPStatus.OK),
@@ -105,9 +94,9 @@ class TestRoutes(TestCase):
             ('notes:list', None),
             ('notes:success', None),
             ('notes:add', None),
-            ('notes:edit', (self.note.slug,)),
-            ('notes:delete', (self.note.slug,)),
-            ('notes:detail', (self.note.slug,)),
+            ('notes:edit', (self.note1.slug,)),
+            ('notes:delete', (self.note1.slug,)),
+            ('notes:detail', (self.note1.slug,)),
         )
         login_url = reverse('users:login')
         for name, args in urls:
