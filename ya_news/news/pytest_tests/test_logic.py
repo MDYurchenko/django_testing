@@ -1,6 +1,6 @@
 import pytest
 from django.shortcuts import reverse
-from ..models import Comment, News
+from ..models import Comment
 from pytest_django.asserts import assertRedirects, assertFormError
 from http import HTTPStatus
 from ..forms import BAD_WORDS, WARNING

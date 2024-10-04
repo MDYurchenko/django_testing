@@ -25,7 +25,6 @@ class TestContent(TestBase):
         отдельная заметка передаётся на страницу со списком заметок в
         списке object_list в словаре context
         """
-
         url = reverse('notes:list')
         response = self.author_logged.get(url)
         object_list = response.context['object_list']
